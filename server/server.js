@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-app.use(cors);
+app.use(cors());
 app.use(bodyParser.json());
 
 const MongoClient = require('mongodb').MongoClient;
@@ -24,5 +24,5 @@ MongoClient.connect('mongodb://localhost:27017')
 .catch(console.error);
 
 app.listen(3000, function() {
-  console.log(`Quiz server running on port ${this.address().port}`);
+  console.log(`Flashcard server running on port ${this.address().port}`);
 })
