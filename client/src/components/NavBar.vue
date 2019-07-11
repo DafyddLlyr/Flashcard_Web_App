@@ -10,8 +10,10 @@ export default {
   props: ['selectedUser'],
   computed: {
     possessiveName() {
-      let name = this.selectedUser.name
-      return name.slice(-1) === 's' ? name + "'" : name +"'s"
+      if (this.selectedUser) {
+        let name = this.selectedUser.name
+        return name.slice(-1) === 's' ? name + "'" : name +"'s"
+      }
     }
   }
 }

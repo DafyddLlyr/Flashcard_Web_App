@@ -6,6 +6,7 @@ import Profile from '@/views/Profile'
 Vue.use(Router)
 
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '',

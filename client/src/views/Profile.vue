@@ -3,8 +3,12 @@
     <nav-bar :selectedUser="selectedUser" />
     <div id="main">
       <p>This is the main pane</p>
+      <h2>Decks</h2>
+      <div v-for="deck in uniqueDecks" class="deck">
+      <h3>{{ deck }}</h3>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -20,6 +24,7 @@ export default {
   },
   mounted() {
     this.fetchFlashcards();
+    if (this.selectedUser === undefined) { this.$router.push('/') }
   },
   methods: {
     fetchFlashcards() {
@@ -30,6 +35,17 @@ export default {
   },
   components: {
     'nav-bar': NavBar
+  },
+  computed: {
+    uniqueDecks() {
+      if (this.flashcards) {
+        const result = []
+        for (let card of this.flashcards) {
+          result.push(card.deck)
+        }
+        return [...new Set(result)]
+      }
+    }
   }
 }
 </script>
@@ -44,6 +60,11 @@ export default {
 
 #main {
   background-color: lightgrey;
+}
+
+.deck {
+  background-color: white;
+  width: 20vw;
 }
 
 </style>
