@@ -2,9 +2,9 @@ use flashcarddb;
 db.dropDatabase();
 
 db.users.insertMany ([
-  {
-    name: "Dafydd"
-  }
+  { name: "Dafydd" },
+  { name: "Katie" },
+  { name: "James" }
 ])
 
 db.flashcards.insertMany ([
