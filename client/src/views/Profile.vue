@@ -1,8 +1,6 @@
 <template lang="html">
   <div id="profile">
-    <div id="nav-bar">
-      <h1>{{possessiveName}} Profile</h1>
-    </div>
+    <nav-bar :selectedUser="selectedUser" />
     <div id="main">
       <p>This is the main pane</p>
     </div>
@@ -10,6 +8,8 @@
 </template>
 
 <script>
+import NavBar from '../components/NavBar.vue'
+
 export default {
   name: 'profile',
   props: [ 'selectedUser' ],
@@ -28,11 +28,8 @@ export default {
       .then(result => this.flashcards = result)
     }
   },
-  computed: {
-    possessiveName() {
-      let name = this.selectedUser.name
-      return name.slice(-1) === 's' ? name + "'" : name +"'s"
-    }
+  components: {
+    'nav-bar': NavBar
   }
 }
 </script>
@@ -43,13 +40,6 @@ export default {
   display: grid;
   grid-template-columns: 25vw auto;
   height: 100vh;
-}
-
-#nav-bar {
-  background-color: darkblue;
-  color: white;
-  display: flex;
-  justify-content: center;
 }
 
 #main {
