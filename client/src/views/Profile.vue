@@ -1,25 +1,37 @@
 <template lang="html">
-  <div id="profile">
-    <nav-bar :selectedUser="selectedUser" />
-    <div id="main">
-      <p>This is the main pane</p>
-      <h2>Decks</h2>
-      <div v-for="deck in uniqueDecks" class="deck">
-      <h3>{{ deck }}</h3>
+  <div id="profile-container">
+    <card-modal v-if="selectedDeck"/>
+    <div id="profile">
+      <nav-bar :selectedUser="selectedUser" />
+      <div id="main">
+        <div>
+          <h2>User greeting</h2>
+        </div>
+        <div>
+          <h2>Stats overview</h2>
+        </div>
+        <div id="deck-container">
+          <h2>Decks</h2>
+          <div v-for="deck in uniqueDecks" class="deck">
+            <h3 v-on:click="chooseDeck(deck)">{{ deck }}</h3>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import NavBar from '../components/NavBar.vue'
+import CardModal from '../components/CardModal.vue'
 
 export default {
   name: 'profile',
   props: [ 'selectedUser' ],
   data() {
     return {
-      flashcards: null
+      flashcards: null,
+      selectedDeck: null,
     }
   },
   mounted() {
@@ -31,10 +43,14 @@ export default {
       fetch('http://localhost:3000/api/flashcards')
       .then(res => res.json())
       .then(result => this.flashcards = result)
+    },
+    chooseDeck(deck) {
+      this.selectedDeck = this.flashcards.filter(card => card.deck === deck)
     }
   },
   components: {
-    'nav-bar': NavBar
+    'nav-bar': NavBar,
+    'card-modal': CardModal
   },
   computed: {
     uniqueDecks() {
@@ -60,11 +76,20 @@ export default {
 
 #main {
   background-color: lightgrey;
+  display: grid;
+  grid-template-rows: 40vh auto;
+  grid-template-columns: 40vw auto;
+  grid-template-areas:
+  'greet stats'
+  'decks decks'
 }
 
 .deck {
   background-color: white;
-  width: 20vw;
+}
+
+#deck-container {
+  grid-area: decks;
 }
 
 </style>
