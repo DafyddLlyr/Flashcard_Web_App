@@ -23,7 +23,8 @@ export default {
   data() {
     return {
       cardPassed: false,
-      cardLevels: ["again", "hard", "good", "easy"]
+      cardLevels: ["new", "hard", "good", "easy"],
+      currentLevel: "new"
     }
   },
   methods: {
@@ -31,18 +32,29 @@ export default {
       this.cardPassed = true;
     },
     nextCard: function(level) {
-      this.selectedDeck.cards.new.push(this.currentCard)
-      this.selectedDeck.cards.new.splice(0, 1)
+      this.selectedDeck.cards[level].push(this.currentCard)
+      this.selectedDeck.cards[this.currentLevel].splice(0, 1)
+      this.assignCurrentLevel()
       this.cardPassed = false;
     },
     prettyLevel: function(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    assignCurrentLevel: function() {
+      for (let level in this.selectedDeck.cards) {
+        if (this.selectedDeck.cards[level].length !== 0) {
+          return this.currentLevel = level
+        }
+      }
     }
   },
   computed: {
     currentCard: function() {
-      return this.selectedDeck.cards.new[0]
-    }
+      return this.selectedDeck.cards[this.currentLevel][0]
+    },
+  },
+  mounted() {
+    this.assignCurrentLevel()
   }
 }
 </script>
