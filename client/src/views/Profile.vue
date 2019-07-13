@@ -14,6 +14,7 @@
           <h2>Decks</h2>
           <div v-for="deck in decks" class="deck">
             <h3 v-on:click="chooseDeck(deck)">{{ deck.name }}</h3>
+            <i v-on:click="handleResetDeck(deck)"class="fas fa-sync-alt"></i>
           </div>
         </div>
       </div>
@@ -25,6 +26,7 @@
 import NavBar from '../components/NavBar.vue'
 import CardModal from '../components/CardModal.vue'
 import { eventBus } from '../main.js'
+import DeckService from '../services/DeckService.js'
 
 export default {
   name: 'profile',
@@ -39,15 +41,27 @@ export default {
     this.fetchFlashcards();
     if (this.selectedUser === undefined) { this.$router.push('/') }
     eventBus.$on('quit-deck', () => this.selectedDeck = null)
+    eventBus.$on('reset-deck', (deck) => this.handleResetDeck(deck))
   },
   methods: {
     fetchFlashcards() {
-      fetch('http://localhost:3000/api/decks')
-      .then(res => res.json())
+      DeckService.getDecks()
       .then(result => this.decks = result)
     },
     chooseDeck(deck) {
       this.selectedDeck = deck;
+    },
+    handleResetDeck(deck) {
+      deck.cards.new = [
+        ...deck.cards.new,
+        ...deck.cards.easy,
+        ...deck.cards.good,
+        ...deck.cards.hard
+      ]
+      deck.cards.easy = [];
+      deck.cards.good = [];
+      deck.cards.hard = [];
+      DeckService.updateDeck(deck._id, {cards: deck.cards})
     }
   },
   components: {
@@ -77,6 +91,7 @@ export default {
 
 .deck {
   background-color: white;
+  display: flex;
 }
 
 #deck-container {

@@ -2,7 +2,7 @@
   <div id="background">
     <div id="card">
       <i v-on:click="quitDeck" class="fas fa-times"></i>
-      <div v-if="!cardPassed && !deckCompleted" id="front">
+      <div v-if="!cardPassed && !deckCompleted && currentLevel" id="front">
         <p>{{ currentCard.front }}</p>
         <button v-on:click="showCard" type="button">Show Answer</button>
       </div>
@@ -15,6 +15,8 @@
       </div>
       <div v-if="deckCompleted" id="completed">
         <h2>Deck completed!</h2>
+        <button v-on:click="quitDeck" type="button">Return to profile</button>
+        <button v-on:click="resetDeck" type="button">Reset Deck</button>
       </div>
     </div>
   </div>
@@ -22,6 +24,7 @@
 
 <script>
 import { eventBus } from '../main.js'
+import DeckService from '../services/DeckService.js'
 
 export default {
   name: 'card-modal',
@@ -50,11 +53,11 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     assignCurrentLevel: function() {
-      for (let level in this.selectedDeck.cards) {
-        if (this.selectedDeck.cards[level].length !== 0) {
-          return this.currentLevel = level
-        }
-      }
+      let level = this.selectedDeck.cards;
+      if (level.new.length) { this.currentLevel = "new"}
+      else if (level.hard.length) { this.currentLevel = "hard"}
+      else if (level.good.length) { this.currentLevel = "good"}
+      else if (level.easy.length) { this.currentLevel = "easy"}
     },
     countCards: function() {
       let numOfCards = 0;
@@ -69,8 +72,17 @@ export default {
       }
     },
     quitDeck: function() {
-      console.log('hello???')
+      DeckService.updateDeck(
+        this.selectedDeck._id,
+        {cards: this.selectedDeck.cards}
+      )
       eventBus.$emit('quit-deck')
+    },
+    resetDeck: function() {
+      this.deckCompleted = false;
+      this.cardPassed = true;
+      this.currentLevel = "new";
+      eventBus.$emit('reset-deck', this.selectedDeck)
     }
   },
   computed: {
