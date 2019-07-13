@@ -1,16 +1,19 @@
 <template lang="html">
   <div id="background">
     <div id="card-container">
-      <div v-if="!cardPassed" class="card front">
+      <div v-if="!cardPassed && !deckCompleted" class="card front">
         <p>{{ currentCard.front }}</p>
         <button v-on:click="showCard" type="button">Show Answer</button>
       </div>
-      <div v-if="cardPassed" class="card back">
+      <div v-if="cardPassed && !deckCompleted" class="card back">
         <p>{{ currentCard.back }}</p>
         <div id="button-container">
           <button v-for="level in cardLevels"
           v-on:click="nextCard(level)" type="button">{{ prettyLevel(level) }}</button>
         </div>
+      </div>
+      <div v-if="deckCompleted" class="card completed">
+        <h2>Deck completed!</h2>
       </div>
     </div>
   </div>
@@ -24,7 +27,9 @@ export default {
     return {
       cardPassed: false,
       cardLevels: ["new", "hard", "good", "easy"],
-      currentLevel: "new"
+      currentLevel: "new",
+      totalCards: 0,
+      deckCompleted: false
     }
   },
   methods: {
@@ -35,6 +40,7 @@ export default {
       this.selectedDeck.cards[level].push(this.currentCard)
       this.selectedDeck.cards[this.currentLevel].splice(0, 1)
       this.assignCurrentLevel()
+      this.checkCompletion()
       this.cardPassed = false;
     },
     prettyLevel: function(string) {
@@ -46,15 +52,31 @@ export default {
           return this.currentLevel = level
         }
       }
+    },
+    countCards: function() {
+      let numOfCards = 0;
+      for (let level of this.cardLevels) {
+        numOfCards += this.selectedDeck.cards[level].length
+      }
+      this.totalCards = numOfCards
+    },
+    checkCompletion: function() {
+      if (this.totalCards === this.selectedDeck.cards.easy.length) {
+        this.deckCompleted = true;
+      }
     }
   },
   computed: {
     currentCard: function() {
-      return this.selectedDeck.cards[this.currentLevel][0]
+      if (this.currentLevel) {
+        return this.selectedDeck.cards[this.currentLevel][0]
+      }
     },
   },
   mounted() {
     this.assignCurrentLevel()
+    this.countCards()
+    this.checkCompletion()
   }
 }
 </script>
