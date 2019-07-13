@@ -3,7 +3,7 @@
     <card-modal v-if="selectedDeck" :selectedDeck="selectedDeck"/>
     <div id="profile">
       <nav-bar :selectedUser="selectedUser" />
-      <div id="main">
+      <div v-if="!deckCreation" id="main">
         <div>
           <h2>User greeting</h2>
         </div>
@@ -13,11 +13,12 @@
         <div id="deck-container">
           <h2>Decks</h2>
           <div v-for="deck in decks" class="deck">
-            <h3 v-on:click="chooseDeck(deck)">{{ deck.name }}</h3>
+            <h3 v-on:click="chooseDeck(deck)" class="deck-title">{{ deck.name }}</h3>
             <i v-on:click="handleResetDeck(deck)"class="fas fa-sync-alt"></i>
           </div>
         </div>
       </div>
+      <create-deck v-if="deckCreation" />
     </div>
   </div>
 </template>
@@ -25,6 +26,7 @@
 <script>
 import NavBar from '../components/NavBar.vue'
 import CardModal from '../components/CardModal.vue'
+import CreateDeck from '../components/CreateDeck.vue'
 import { eventBus } from '../main.js'
 import DeckService from '../services/DeckService.js'
 
@@ -34,7 +36,8 @@ export default {
   data() {
     return {
       decks: null,
-      selectedDeck: null
+      selectedDeck: null,
+      deckCreation: null
     }
   },
   mounted() {
@@ -42,6 +45,8 @@ export default {
     if (this.selectedUser === undefined) { this.$router.push('/') }
     eventBus.$on('quit-deck', () => this.selectedDeck = null)
     eventBus.$on('reset-deck', (deck) => this.handleResetDeck(deck))
+    eventBus.$on('create-deck', () => this.deckCreation = true)
+    eventBus.$on('view-profile', () => this.deckCreation = false)
   },
   methods: {
     fetchFlashcards() {
@@ -66,7 +71,8 @@ export default {
   },
   components: {
     'nav-bar': NavBar,
-    'card-modal': CardModal
+    'card-modal': CardModal,
+    'create-deck': CreateDeck
   }
 }
 </script>
@@ -85,17 +91,40 @@ export default {
   grid-template-rows: 40vh auto;
   grid-template-columns: 40vw auto;
   grid-template-areas:
-  'greet stats'
-  'decks decks'
+    'greet stats'
+    'decks decks'
 }
 
 .deck {
-  background-color: white;
   display: flex;
+  margin: 1vw;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #deck-container {
   grid-area: decks;
+}
+
+.deck-title {
+  background-color: white;
+  height: 100%;
+  width: 100%;
+  height: 4vw;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding-left: 2vw;
+}
+
+.fa-sync-alt {
+  background-color: white;
+  cursor: pointer;
+  height: 4vw;
+  width: 4.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 </style>
