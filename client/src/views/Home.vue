@@ -2,7 +2,7 @@
   <div id="home">
     <h1>Welcome to FlashCards</h1>
     <select v-model="selectedUser">
-      <option value="">Select a user</option>
+      <!-- <option value="">Select a user</option> -->
       <option v-for="user in users" :value="user">{{user.name}}</option>
     </select>
   <router-link :to="{ name: 'profile', params: {selectedUser: selectedUser} }" tag="button">Login</router-link>

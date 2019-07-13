@@ -2,14 +2,15 @@
   <div id="background">
     <div id="card-container">
       <div v-if="!cardPassed" class="card front">
-        <h2>Front</h2>
         <p>{{ currentCard.front }}</p>
-        <h2 v-on:click="guessCard">Guess</h2>
+        <button v-on:click="showCard" type="button">Show Answer</button>
       </div>
       <div v-if="cardPassed" class="card back">
-        <h2>Back</h2>
         <p>{{ currentCard.back }}</p>
-        <h2 v-on:click="nextCard">Next</h2>
+        <div id="button-container">
+          <button v-for="level in cardLevels"
+          v-on:click="nextCard(level)" type="button">{{ prettyLevel(level) }}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -22,21 +23,25 @@ export default {
   data() {
     return {
       cardPassed: false,
+      cardLevels: ["again", "hard", "good", "easy"]
     }
   },
   methods: {
-    guessCard: function() {
+    showCard: function() {
       this.cardPassed = true;
     },
-    nextCard: function() {
-      this.selectedDeck.push(this.currentCard)
-      this.selectedDeck.splice(0, 1)
+    nextCard: function(level) {
+      this.selectedDeck.cards.new.push(this.currentCard)
+      this.selectedDeck.cards.new.splice(0, 1)
       this.cardPassed = false;
+    },
+    prettyLevel: function(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
     }
   },
   computed: {
     currentCard: function() {
-      return this.selectedDeck[0]
+      return this.selectedDeck.cards.new[0]
     }
   }
 }
@@ -57,15 +62,15 @@ export default {
   align-items: center;
 }
 
-.card-container {
-  perspective: 1000px;
-}
-
 .card {
   background-color: white;
   width: 40vw;
   height: 80vh;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 </style>

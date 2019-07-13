@@ -12,8 +12,8 @@
         </div>
         <div id="deck-container">
           <h2>Decks</h2>
-          <div v-for="deck in uniqueDecks" class="deck">
-            <h3 v-on:click="chooseDeck(deck)">{{ deck }}</h3>
+          <div v-for="deck in decks" class="deck">
+            <h3 v-on:click="chooseDeck(deck)">{{ deck.name }}</h3>
           </div>
         </div>
       </div>
@@ -30,7 +30,7 @@ export default {
   props: [ 'selectedUser' ],
   data() {
     return {
-      flashcards: null,
+      decks: null,
       selectedDeck: null
     }
   },
@@ -40,28 +40,17 @@ export default {
   },
   methods: {
     fetchFlashcards() {
-      fetch('http://localhost:3000/api/flashcards')
+      fetch('http://localhost:3000/api/decks')
       .then(res => res.json())
-      .then(result => this.flashcards = result)
+      .then(result => this.decks = result)
     },
     chooseDeck(deck) {
-      this.selectedDeck = this.flashcards.filter(card => card.deck === deck)
+      this.selectedDeck = deck;
     }
   },
   components: {
     'nav-bar': NavBar,
     'card-modal': CardModal
-  },
-  computed: {
-    uniqueDecks() {
-      if (this.flashcards) {
-        const result = []
-        for (let card of this.flashcards) {
-          result.push(card.deck)
-        }
-        return [...new Set(result)]
-      }
-    }
   }
 }
 </script>
