@@ -80,7 +80,7 @@ export default {
     },
     resetDeck: function() {
       this.deckCompleted = false;
-      this.cardPassed = true;
+      this.cardPassed = false;
       this.currentLevel = "new";
       eventBus.$emit('reset-deck', this.selectedDeck)
     }
