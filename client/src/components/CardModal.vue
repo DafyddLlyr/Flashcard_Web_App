@@ -1,19 +1,34 @@
 <template lang="html">
   <div id="background">
     <div id="card-container">
-      <div class="card front">
+      <div v-if="!cardPassed" class="card front">
         <h2>Front</h2>
+        <h2 v-on:click="guessCard">Guess</h2>
       </div>
-      <!-- <div class="card back">
+      <div v-if="cardPassed" class="card back">
         <h2>Back</h2>
-      </div> -->
+        <h2 v-on:click="nextCard">Next</h2>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'card-modal'
+  name: 'card-modal',
+  data() {
+    return {
+      cardPassed: false
+    }
+  },
+  methods: {
+    guessCard: function() {
+      this.cardPassed = true;
+    },
+    nextCard: function() {
+      this.cardPassed = false;
+    }
+  }
 }
 </script>
 
