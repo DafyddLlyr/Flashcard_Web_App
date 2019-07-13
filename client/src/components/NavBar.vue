@@ -1,6 +1,7 @@
 <template lang="html">
   <div id="nav-bar">
     <h1>{{ possessiveName }} Profile </h1>
+    <router-link v-if="selectedUser" to="/" tag="button">Log Out</router-link>
   </div>
 </template>
 
@@ -25,7 +26,9 @@ export default {
   background-color: darkblue;
   color: white;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
 }
 
 

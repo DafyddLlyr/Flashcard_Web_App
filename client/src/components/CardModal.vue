@@ -1,18 +1,19 @@
 <template lang="html">
   <div id="background">
-    <div id="card-container">
-      <div v-if="!cardPassed && !deckCompleted" class="card front">
+    <div id="card">
+      <i v-on:click="quitDeck" class="fas fa-times"></i>
+      <div v-if="!cardPassed && !deckCompleted" id="front">
         <p>{{ currentCard.front }}</p>
         <button v-on:click="showCard" type="button">Show Answer</button>
       </div>
-      <div v-if="cardPassed && !deckCompleted" class="card back">
+      <div v-if="cardPassed && !deckCompleted" id="back">
         <p>{{ currentCard.back }}</p>
         <div id="button-container">
           <button v-for="level in cardLevels"
           v-on:click="nextCard(level)" type="button">{{ prettyLevel(level) }}</button>
         </div>
       </div>
-      <div v-if="deckCompleted" class="card completed">
+      <div v-if="deckCompleted" id="completed">
         <h2>Deck completed!</h2>
       </div>
     </div>
@@ -20,6 +21,8 @@
 </template>
 
 <script>
+import { eventBus } from '../main.js'
+
 export default {
   name: 'card-modal',
   props: ['selectedDeck'],
@@ -64,6 +67,10 @@ export default {
       if (this.totalCards === this.selectedDeck.cards.easy.length) {
         this.deckCompleted = true;
       }
+    },
+    quitDeck: function() {
+      console.log('hello???')
+      eventBus.$emit('quit-deck')
     }
   },
   computed: {
@@ -96,15 +103,31 @@ export default {
   align-items: center;
 }
 
-.card {
+#card {
   background-color: white;
   width: 40vw;
   height: 80vh;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+}
+
+#front, #back, #completed {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  top: -2vw;
+}
+
+.fa-times {
+  margin: 1vw;
+  cursor: pointer;
+  z-index: 2;
 }
 
 </style>

@@ -24,6 +24,7 @@
 <script>
 import NavBar from '../components/NavBar.vue'
 import CardModal from '../components/CardModal.vue'
+import { eventBus } from '../main.js'
 
 export default {
   name: 'profile',
@@ -37,6 +38,7 @@ export default {
   mounted() {
     this.fetchFlashcards();
     if (this.selectedUser === undefined) { this.$router.push('/') }
+    eventBus.$on('quit-deck', () => this.selectedDeck = null)
   },
   methods: {
     fetchFlashcards() {
