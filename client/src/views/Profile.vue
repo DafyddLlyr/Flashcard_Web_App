@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="profile-container">
-    <card-modal v-if="selectedDeck"/>
+    <card-modal v-if="selectedDeck" :selectedDeck="selectedDeck"/>
     <div id="profile">
       <nav-bar :selectedUser="selectedUser" />
       <div id="main">
@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       flashcards: null,
-      selectedDeck: null,
+      selectedDeck: null
     }
   },
   mounted() {

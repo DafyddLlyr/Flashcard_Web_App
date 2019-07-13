@@ -3,10 +3,12 @@
     <div id="card-container">
       <div v-if="!cardPassed" class="card front">
         <h2>Front</h2>
+        <p>{{ currentCard.front }}</p>
         <h2 v-on:click="guessCard">Guess</h2>
       </div>
       <div v-if="cardPassed" class="card back">
         <h2>Back</h2>
+        <p>{{ currentCard.back }}</p>
         <h2 v-on:click="nextCard">Next</h2>
       </div>
     </div>
@@ -16,9 +18,10 @@
 <script>
 export default {
   name: 'card-modal',
+  props: ['selectedDeck'],
   data() {
     return {
-      cardPassed: false
+      cardPassed: false,
     }
   },
   methods: {
@@ -26,7 +29,14 @@ export default {
       this.cardPassed = true;
     },
     nextCard: function() {
+      this.selectedDeck.push(this.currentCard)
+      this.selectedDeck.splice(0, 1)
       this.cardPassed = false;
+    }
+  },
+  computed: {
+    currentCard: function() {
+      return this.selectedDeck[0]
     }
   }
 }
