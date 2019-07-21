@@ -3,10 +3,14 @@
     <h1>Create New Deck</h1>
     <div id="form-container">
 
-      <div id="name-container">
-        <label>Deck Name</label>
-        <input type="text" value="Deck Name" v-model="deckName" id="deck-name-input" required>
+      <div id="deck-name-modal" v-if="!deckNameSelected">
+        <div id="name-container">
+          <input type="text" value="Deck Name" v-model="deckName" id="deck-name-input" placeholder="New deck name" required>
+          <button type="button" id="submit-button" v-on:click="turnOffModal">Create Deack</button>
+        </div>
       </div>
+
+      <h2 id="deck-name-title">{{ deckName }}</h2>
 
       <div id="card-front" class="card-container">
         <label for="card-front">Card Front</label>
@@ -18,9 +22,16 @@
         <textarea name="card-back" v-model="cardBack" class="card" required/>
       </div>
 
-<div id="submit-button-container">
-<button type="button" id="submit-button">Save</button>
-</div>
+      <div id="submit-button-container">
+        <button type="button" id="submit-button" v-on:click="handleCardCreation">Save Card</button>
+      </div>
+
+      <div id="submit-button-container">
+        <button type="button" id="submit-button" v-on:click="handleDeckCreation">Save Deck</button>
+      </div>
+
+    </div>
+    <div class="table">
 
     </div>
   </div>
@@ -31,9 +42,21 @@ export default {
   name: 'create-deck',
   data() {
     return {
+      deckNameSelected: false,
       deckName: '',
       cardFront: '',
       cardBack: '',
+    }
+  },
+  methods: {
+    turnOffModal: function() {
+      this.deckNameSelected = true;
+    },
+    handleDeckCreation: function() {
+      console.log("Deck added to db");
+    },
+    handleCardCreation: function() {
+      console.log("Card added to db");
     }
   }
 }
@@ -41,15 +64,39 @@ export default {
 
 <style lang="css" scoped>
 
+#deck-name-modal {
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#deck-name-title {
+  height: 4vh;
+}
+
 #create-deck {
   background-color: lightgrey;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-auto-rows: auto auto;
+  grid-template-areas:
+  'title table'
+  'form table'
 }
 
 .card {
   resize: none;
   text-align: center;
-  width: 70%;
-  height: 100%;
+  width: 100%;
+  height: 25vh;
   outline: none;
   border: none;
   border-radius: 20px;
@@ -57,16 +104,13 @@ export default {
 }
 
 #form-container {
-  margin: 0 5vw;
-  margin-top: 2vw;
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-row-gap: 1vw;
-  grid-template-rows: auto 15vw 3vw;
-  grid-template-areas:
-  'deck-name deck-name'
-  'front back'
-  'confirm confirm';
+  grid-area: form;
+  padding: 0 2vw;
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .card-container {
@@ -75,16 +119,7 @@ export default {
   align-items: center;
 }
 
-#card-front {
-  grid-area: front;
-}
-
-#card-back {
-  grid-area: back;
-}
-
 #name-container {
-  grid-area: deck-name;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -95,13 +130,12 @@ export default {
   border: none;
   outline: none;
   border-radius: 20px;
-  width: 35vw;
+  width: 100%;
   height: 3vw;
   text-align: center;
 }
 
 #submit-button-container {
-  grid-area: confirm;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -110,6 +144,11 @@ export default {
 #submit-button {
   width: 20vw;
   height: 2vw;
+}
+
+.table {
+  grid-area: table;
+  background-color: pink
 }
 
 </style>
