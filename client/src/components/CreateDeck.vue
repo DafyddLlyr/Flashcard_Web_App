@@ -6,7 +6,7 @@
       <div id="deck-name-modal" v-if="!deckNameSelected">
         <div id="name-container">
           <input type="text" value="Deck Name" v-model="deckName" id="deck-name-input" placeholder="New deck name" required>
-          <button type="button" id="submit-button" v-on:click="turnOffModal">Create Deack</button>
+          <button type="button" id="submit-button" v-on:click="turnOffModal">Create Deck</button>
         </div>
       </div>
 
@@ -32,7 +32,18 @@
 
     </div>
     <div class="table">
-
+      <table>
+        <tr>
+          <th>#</th>
+          <th>Question</th>
+        </tr>
+        <tr v-for="card in newCards">
+          <td class="number-column">{{ newCards.indexOf(card) + 1 }}</td>
+          <td class="quesion-column">{{ card.front }}</td>
+          <td class="admin-column">Edit</td>
+          <td class="admin-column">Delete</td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -53,13 +64,10 @@ export default {
   },
   methods: {
     turnOffModal: function() {
-      // Check unique deck name
+      // TODO: Check unique deck name
+      // TODO: Check deck has a name
       const payload = {
-        name: this.deckName,
-        new: this.newCards,
-        hard: [],
-        good: [],
-        easy: []
+        name: this.deckName
       }
       DeckService.postDeck(payload)
       .then(() => fetch('http://localhost:3000/api/decks/'))
@@ -68,12 +76,24 @@ export default {
       .then(deck => this.deckID = deck[0]._id);
       this.deckNameSelected = true;
     },
+    handleCardCreation: function() {
+      this.newCards.push({front: this.cardFront, back: this.cardBack})
+      DeckService.updateDeck(this.deckID, {
+        cards: {
+          new: this.newCards,
+          hard: [],
+          good: [],
+          easy: []
+        }
+      })
+      .then(() => {
+        this.cardFront = '',
+        this.cardBack = ''
+      })
+    },
     handleDeckCreation: function() {
       console.log("Deck added to db");
     },
-    handleCardCreation: function() {
-      console.log("Card added to db");
-    }
   }
 }
 </script>
@@ -164,7 +184,15 @@ export default {
 
 .table {
   grid-area: table;
-  background-color: pink
+}
+
+table {
+  width: 100%;
+  background-color: white;
+}
+
+.admin-column {
+  width: 5vw;
 }
 
 </style>
