@@ -38,18 +38,34 @@
 </template>
 
 <script>
+import DeckService from '../services/DeckService'
 export default {
   name: 'create-deck',
   data() {
     return {
       deckNameSelected: false,
       deckName: '',
+      deckID: null,
       cardFront: '',
       cardBack: '',
+      newCards: [],
     }
   },
   methods: {
     turnOffModal: function() {
+      // Check unique deck name
+      const payload = {
+        name: this.deckName,
+        new: this.newCards,
+        hard: [],
+        good: [],
+        easy: []
+      }
+      DeckService.postDeck(payload)
+      .then(() => fetch('http://localhost:3000/api/decks/'))
+      .then(res => res.json())
+      .then(decks => decks.filter(deck => deck.name === this.deckName))
+      .then(deck => this.deckID = deck[0]._id);
       this.deckNameSelected = true;
     },
     handleDeckCreation: function() {

@@ -14,6 +14,15 @@ export default {
       headers: {'Content-Type': 'application/json'}
     })
     .then(res => res.json())
-  }
-  
+  },
+
+  postDeck(payload){
+     return fetch(baseURL, {
+       method: 'POST',
+       body: JSON.stringify(payload),
+       headers: { 'Content-Type': 'application/json'}
+     })
+     .then(res => res.json())
+   },
+
 }
